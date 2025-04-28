@@ -5,15 +5,24 @@
   <title>MTG Card Vault - Lookup</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+
 <body>
 
-  <h1>Card Lookup</h1>
+  <nav>
+    <a href="../index.html">Home</a> |
+    <a href="lookup.html">Lookup</a> |
+    <a href="collection.html">My Collection</a>
+  </nav>
 
+  <h1>Card Lookup</h1>
   <input type="text" id="search-input" placeholder="Enter card name...">
   <button id="search-button">Search</button>
-
   <div id="search-result"></div>
 
-  <script type="module" src="../assets/js/lookup.js"></script>
+  
+  
+  <!-- Only load the lookup.js for this page -->
+  <script type="module" src="../assets/js/card-vault/lookup.js"></script>
+
 </body>
 </html>
