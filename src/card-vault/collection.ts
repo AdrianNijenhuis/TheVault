@@ -53,12 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCollection(collectionList);
 
   toggleButton.addEventListener('click', () => {
+    console.log("Toggle button clicked.");
     showImages = !showImages; // Flip the mode
+    console.log("showImages is now:", showImages);
     renderCollection(collectionList); // Re-render
   });
 });
 
+
 function renderCollection(container: HTMLElement) {
+  console.log("Rendering collection. showImages =", showImages);
+
   container.innerHTML = ""; // Clear it before rendering
 
   const collection = getCollection();
