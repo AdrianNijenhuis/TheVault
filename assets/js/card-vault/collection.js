@@ -1,3 +1,4 @@
+let showImages = true; // Start with showing images
 // Helper to load your collection
 function getCollection() {
     const stored = localStorage.getItem('mtg-collection');
@@ -22,9 +23,28 @@ function removeCardFromCollection(card) {
         saveCollection(collection);
     }
 }
+// Update the number shown on screen for a specific card
+function updateCount(cardId) {
+    const collection = getCollection();
+    const count = collection.filter(c => c.id === cardId).length;
+    const countSpan = document.getElementById(`count-${cardId}`);
+    if (countSpan) {
+        countSpan.textContent = count.toString();
+    }
+    // Optional: If count is 0, re-render the collection (hide card completely)
+    if (count === 0) {
+        const container = document.getElementById('collection-list');
+        renderCollection(container);
+    }
+}
 document.addEventListener('DOMContentLoaded', () => {
     const collectionList = document.getElementById('collection-list');
+    const toggleButton = document.getElementById('toggle-display');
     renderCollection(collectionList);
+    toggleButton.addEventListener('click', () => {
+        showImages = !showImages; // Flip the mode
+        renderCollection(collectionList); // Re-render
+    });
 });
 function renderCollection(container) {
     container.innerHTML = ""; // Clear it before rendering
@@ -48,7 +68,7 @@ function renderCollection(container) {
         const cardDiv = document.createElement('div');
         cardDiv.innerHTML = `
       <h2>${card.name}</h2>
-      <img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">
+      ${showImages ? `<img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">` : ""}
       <p>
         Copies Owned: <span id="count-${card.id}">${count}</span>
         <button id="decrease-${card.id}">-</button>
@@ -69,19 +89,5 @@ function renderCollection(container) {
             updateCount(card.id);
         });
     });
-}
-// Update the number shown on screen for a specific card
-function updateCount(cardId) {
-    const collection = getCollection();
-    const count = collection.filter(c => c.id === cardId).length;
-    const countSpan = document.getElementById(`count-${cardId}`);
-    if (countSpan) {
-        countSpan.textContent = count.toString();
-    }
-    // Optional: If count is 0, re-render the collection (hide card completely)
-    if (count === 0) {
-        const container = document.getElementById('collection-list');
-        renderCollection(container);
-    }
 }
 export {};
