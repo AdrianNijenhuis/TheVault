@@ -69,7 +69,7 @@ function renderCollection(container: HTMLElement) {
     const cardDiv = document.createElement('div');
     cardDiv.innerHTML = `
       <h2>${card.name}</h2>
-      <img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">
+      ${showImages ? `<img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">` : ""}
       <p>
         Copies Owned: <span id="count-${card.id}">${count}</span>
         <button id="decrease-${card.id}">-</button>
@@ -77,6 +77,7 @@ function renderCollection(container: HTMLElement) {
       </p>
       <hr>
     `;
+
     container.appendChild(cardDiv);
 
     // Attach button listeners
