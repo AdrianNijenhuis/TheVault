@@ -30,6 +30,22 @@ function removeCardFromCollection(card: Card) {
   }
 }
 
+// Update the number shown on screen for a specific card
+function updateCount(cardId: string) {
+  const collection = getCollection();
+  const count = collection.filter(c => c.id === cardId).length;
+  const countSpan = document.getElementById(`count-${cardId}`);
+  if (countSpan) {
+    countSpan.textContent = count.toString();
+  }
+
+  // Optional: If count is 0, re-render the collection (hide card completely)
+  if (count === 0) {
+    const container = document.getElementById('collection-list') as HTMLDivElement;
+    renderCollection(container);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const collectionList = document.getElementById('collection-list') as HTMLDivElement;
   const toggleButton = document.getElementById('toggle-display') as HTMLButtonElement;
@@ -51,7 +67,6 @@ function renderCollection(container: HTMLElement) {
     container.innerHTML = `<p>You don't own any cards yet.</p>`;
     return;
   }
-
 
   // Build a unique list of cards and count how many of each
   const cardCountMap = new Map<string, { card: Card, count: number }>();
@@ -77,7 +92,6 @@ function renderCollection(container: HTMLElement) {
       </p>
       <hr>
     `;
-
     container.appendChild(cardDiv);
 
     // Attach button listeners
@@ -94,20 +108,4 @@ function renderCollection(container: HTMLElement) {
       updateCount(card.id);
     });
   });
-}
-
-// Update the number shown on screen for a specific card
-function updateCount(cardId: string) {
-  const collection = getCollection();
-  const count = collection.filter(c => c.id === cardId).length;
-  const countSpan = document.getElementById(`count-${cardId}`);
-  if (countSpan) {
-    countSpan.textContent = count.toString();
-  }
-
-  // Optional: If count is 0, re-render the collection (hide card completely)
-  if (count === 0) {
-    const container = document.getElementById('collection-list') as HTMLDivElement;
-    renderCollection(container);
-  }
 }
