@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 function renderCollection(container) {
-    container.innerHTML = ""; // Clear it before rendering
-    const collection = getCollection();
+    container.innerHTML = `<div class="card-grid"></div>`; // Insert grid wrapper
+    const grid = container.querySelector('.card-grid') as HTMLDivElement;
     if (collection.length === 0) {
         container.innerHTML = `<p>You don't own any cards yet.</p>`;
         return;
@@ -76,7 +76,7 @@ function renderCollection(container) {
       </p>
       <hr>
     `;
-        container.appendChild(cardDiv);
+        grid.appendChild(cardDiv);
         // Attach button listeners
         const increaseButton = document.getElementById(`increase-${card.id}`);
         const decreaseButton = document.getElementById(`decrease-${card.id}`);
