@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MTG Card Vault - Home</title>
+  <title>MTG Card Vault - Home 2</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
@@ -12,22 +12,26 @@
         <a href="home2.html">home2</a> |
         <a href="lookup.html">Lookup</a> |
         <a href="collection.html">My Collection</a>
-      </nav>
+    </nav>
 
-  <h1>Home</h1>
-  <button id="toggle-display">Toggle Display Mode</button>
-  <div id="collection-list"></div>
+    <h1>Card Lookup</h1>
+    <input type="text" id="search-input" placeholder="Enter card name...">
+    <button id="search-button">Search</button>
+    <div id="search-result"></div>
 
-  <script type="module" src="../assets/js/card-vault/collection.js"></script>
+    <script type="module" src="../assets/js/card-vault/lookup.js"></script>
 
-  <h1>--------------------------------------------------------------</h1>
+    <h1>--------------------------------------------------------------</h1>
 
-  <h1>Card Lookup</h1>
-  <input type="text" id="search-input" placeholder="Enter card name...">
-  <button id="search-button">Search</button>
-  <div id="search-result"></div>
+    <h1>Home</h1>
+    <button id="toggle-display">Toggle Display Mode</button>
+    <div id="collection-list"></div>
 
-  <script type="module" src="../assets/js/card-vault/lookup.js"></script>
+    <script type="module" src="../assets/js/card-vault/collection.js"></script>
+
+    
+
+  
 
 </body>
 </html>
