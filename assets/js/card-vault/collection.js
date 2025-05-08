@@ -46,48 +46,59 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCollection(collectionList); // Re-render
     });
 });
+
+
+
+
+///////////////Render Collection///////////////////////////////////
 function renderCollection(container) {
-    container.innerHTML = `<div class="card-grid"></div>`; // Insert grid wrapper
-    const grid = container.querySelector('.card-grid') as HTMLDivElement;
+    const collection = getCollection();
+    container.innerHTML = `<div class="card-grid"></div>`; 
+    const grid = container.querySelector('.card-grid');
+
     if (collection.length === 0) {
         container.innerHTML = `<p>You don't own any cards yet.</p>`;
         return;
     }
-    // Build a unique list of cards and count how many of each
+
     const cardCountMap = new Map();
     for (const card of collection) {
         if (cardCountMap.has(card.id)) {
             cardCountMap.get(card.id).count++;
-        }
-        else {
+        } else {
             cardCountMap.set(card.id, { card, count: 1 });
         }
     }
-    // Display each unique card
+
     cardCountMap.forEach(({ card, count }) => {
         const cardDiv = document.createElement('div');
+        cardDiv.classList.add('card-item');
         cardDiv.innerHTML = `
-      <h2>${card.name}</h2>
-      ${showImages ? `<img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">` : ""}
-      <p>
-        Copies Owned: <span id="count-${card.id}">${count}</span>
-        <button id="decrease-${card.id}">-</button>
-        <button id="increase-${card.id}">+</button>
-      </p>
-      <hr>
-    `;
+            <h2>${card.name}</h2>
+            ${showImages ? `<img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">` : ""}
+            <p>
+                Copies Owned: <span id="count-${card.id}">${count}</span>
+                <button id="decrease-${card.id}">-</button>
+                <button id="increase-${card.id}">+</button>
+            </p>
+        `;
         grid.appendChild(cardDiv);
-        // Attach button listeners
+
         const increaseButton = document.getElementById(`increase-${card.id}`);
         const decreaseButton = document.getElementById(`decrease-${card.id}`);
+
         increaseButton.addEventListener('click', () => {
             addCardToCollection(card);
             updateCount(card.id);
         });
+
         decreaseButton.addEventListener('click', () => {
             removeCardFromCollection(card);
             updateCount(card.id);
         });
     });
 }
+
+
+
 export {};
