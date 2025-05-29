@@ -1,34 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- establishes language -->
+<html lang="en"> 
 <head>
-  <meta charset="UTF-8">
-  <title>Nen Category Test</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- establishes Unicode Transformation Format - 8-bit character encoding system -->
+    <meta charset="UTF-8"> 
+    <!-- makes width/screen scale properly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nen Personality Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Flexbox layout for two-column question arrangement */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1350px; /* Adjust width as needed */
+            margin: auto; /* Center the form */
+        }
+
+        .column {
+            width: 48%; /* Each column takes up almost half */
+        }
+
+        .question {
+        display: flex;
+        flex-direction: column;  /* Keeps label and textarea stacked */
+        align-items: stretch;  /* Ensures alignment */
+        margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .submit-container {
+        text-align: center;
+        margin-top: 20px;
+        }
+
+    </style>
 </head>
 <body>
+    <h1 style="text-align: center;">Welcome to the Nen Personality Quiz</h1>
 
-  <nav>
-    <a href="index.html">Home</a>
-  </nav>
+    <form method="POST">
+        <div class="container">
+            <!-- Left Column (Questions 1-5) -->
+            <div class="column">
+                <div class="question">
+                    <label>1. How do you typically approach a difficult challenge?</label>
+                    <textarea name="q1" required></textarea>
+                </div>
 
-  <header>
-    <h1>Nen Category Quiz</h1>
-  </header>
+                <div class="question">
+                    <label>2. If you were given a powerful ability with a major drawback, how would you adapt to it?</label>
+                    <textarea name="q2" required></textarea>
+                </div>
 
-  <main>
-    <p>This tool identifies which Nen category you or a character you’ve created would belong to. By answering a series of questions about mindset, habits, and strengths, it determines your alignment with one of the six Nen types: Enhancement, Emission, Manipulation, Transmutation, Conjuration, or Specialization.
-    </p>
-    <p>Many tests like the Nen and MTG tests you can find online are personality tests. You've seen them, whether you're trying to find out which Hogwarts house you belong to, or take the coporate beloved personality test. My main issue with these
-      personality tests is that they are... bad? "Bad" isn't the best way to put it, but to me, they've always felt bad because I never found that the provided answers suited mine, as I would have to choose from limiting options or from a range of agree
-      to disagree. What I've done here is for these tests is provided an open ended questionaire that uses sentence embedding ("a representation of a sentence as a vector of numbers") to assign point values to responses, analyzing what you've written with
-      (presumably) good enough accuracy to correctly (allegedly) assign your personality.
-    </p>
-  </main>
+                <div class="question">
+                    <label>3. What drives you to improve yourself the most?</label>
+                    <textarea name="q3" required></textarea>
+                </div>
 
-  <main id="quiz-container">
-    <p>Answer the following questions:</p>
-  </main>
+                <div class="question">
+                    <label>4. How do you handle a conflict with someone who disagrees with you?</label>
+                    <textarea name="q4" required></textarea>
+                </div>
 
-  <script src="assets/js/main.js"></script>
+                <div class="question">
+                    <label>5. If you could change one thing about the world, what would it be and why?</label>
+                    <textarea name="q5" required></textarea>
+                </div>
+            </div>
+
+            <!-- Right Column (Questions 6-10) -->
+            <div class="column">
+                <div class="question">
+                    <label>6. Do you prefer working alone or with others? Why?</label>
+                    <textarea name="q6" required></textarea>
+                </div>
+
+                <div class="question">
+                    <label>7. If someone betrayed your trust, how would you respond?</label>
+                    <textarea name="q7" required></textarea>
+                </div>
+
+                <div class="question">
+                    <label>8. If you could have any magical ability, what would it be/do, and why?</label>
+                    <textarea name="q8" required></textarea>
+                </div>
+
+                <div class="question">
+                    <label>9. What frustrates you the most?</label>
+                    <textarea name="q9" required></textarea>
+                </div>
+
+                <div class="question">
+                    <label>10. How do you typically improve your skills?</label>
+                    <textarea name="q10" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit button centered below both columns -->
+        <div class="submit-container">
+            <input type="submit" value="Find My Nen Type">
+        </div>
+    </form>
 </body>
 </html>
