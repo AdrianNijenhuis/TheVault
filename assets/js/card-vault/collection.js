@@ -1,19 +1,24 @@
-let showImages = true; // Start with showing images
+// Start with showing images
+let showImages = true;
+
 // Helper to load collection
 function getCollection() {
     const stored = localStorage.getItem('mtg-collection');
     return stored ? JSON.parse(stored) : [];
 }
+
 // Helper to save collection
 function saveCollection(collection) {
     localStorage.setItem('mtg-collection', JSON.stringify(collection));
 }
+
 // Add a copy
 function addCardToCollection(card) {
     const collection = getCollection();
     collection.push(card);
     saveCollection(collection);
 }
+
 // Remove a copy
 function removeCardFromCollection(card) {
     const collection = getCollection();
@@ -23,6 +28,7 @@ function removeCardFromCollection(card) {
         saveCollection(collection);
     }
 }
+
 // Update the number shown on screen for a specific card
 function updateCount(cardId) {
     const collection = getCollection();
@@ -37,6 +43,7 @@ function updateCount(cardId) {
         renderCollection(container);
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     const collectionList = document.getElementById('collection-list');
     const toggleButton = document.getElementById('toggle-display');
@@ -85,8 +92,12 @@ function renderCollection(container) {
         grid.appendChild(cardDiv);
     });
 
+    // Always clear previous event listeners before attaching a new one
+    const newGrid = grid.cloneNode(true);
+    grid.parentNode.replaceChild(newGrid, grid);
+
     // Attach a single click handler to the grid
-    grid.addEventListener('click', (event) => {
+    newGrid.addEventListener('click', (event) => {
         const button = event.target.closest('button');
         if (!button) return;
 
@@ -95,13 +106,14 @@ function renderCollection(container) {
 
         if (!action || !cardId) return;
 
-        // Find the card object again to pass to add/remove
-        const { card } = cardCountMap.get(cardId);
+        const collection = getCollection();
+        const firstMatch = collection.find(c => c.id === cardId);
+        if (!firstMatch) return;
 
         if (action === 'increase') {
-            addCardToCollection(card);
+            addCardToCollection(firstMatch);
         } else if (action === 'decrease') {
-            removeCardFromCollection(card);
+            removeCardFromCollection(firstMatch);
         }
 
         // Always re-render the collection to refresh counts/buttons
