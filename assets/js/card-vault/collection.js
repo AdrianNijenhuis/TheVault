@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ///////////////Render Collection///////////////////////////////////
 function renderCollection(container) {
     const collection = getCollection();
-    container.innerHTML = `<div class="card-grid"></div>`; 
+    container.innerHTML = `<div class="card-grid"></div>`;
     const grid = container.querySelector('.card-grid');
 
     if (collection.length === 0) {
@@ -78,28 +78,37 @@ function renderCollection(container) {
             ${showImages ? `<img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">` : ""}
             <p>
                 Copies Owned: <span id="count-${card.id}">${count}</span>
-                <button id="decrease-${card.id}">-</button>
-                <button id="increase-${card.id}">+</button>
+                <button data-action="decrease" data-card-id="${card.id}">-</button>
+                <button data-action="increase" data-card-id="${card.id}">+</button>
             </p>
         `;
         grid.appendChild(cardDiv);
+    });
 
-        const increaseButton = document.getElementById(`increase-${card.id}`);
-        const decreaseButton = document.getElementById(`decrease-${card.id}`);
+    // Attach a single click handler to the grid
+    grid.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        if (!button) return;
 
-        increaseButton.addEventListener('click', () => {
+        const action = button.dataset.action;
+        const cardId = button.dataset.cardId;
+
+        if (!action || !cardId) return;
+
+        // Find the card object again to pass to add/remove
+        const { card } = cardCountMap.get(cardId);
+
+        if (action === 'increase') {
             addCardToCollection(card);
-            const container = document.getElementById('collection-list');
-            renderCollection(container);
-        });
-
-        decreaseButton.addEventListener('click', () => {
+        } else if (action === 'decrease') {
             removeCardFromCollection(card);
-            const container = document.getElementById('collection-list');
-            renderCollection(container);
-        });
+        }
+
+        // Always re-render the collection to refresh counts/buttons
+        renderCollection(container);
     });
 }
+
 
 
 
