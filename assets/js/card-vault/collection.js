@@ -42,7 +42,8 @@ async function fetchCards(name) {
             id: item.id,
             name: item.name,
             imageUrl: (item.image_uris?.normal) || '',
-            type_line: item.type_line || ''
+            type_line: item.type_line || '',
+            colors: item.colors || []
         }));
     } catch (error) {
         console.error('Error fetching cards:', error);
@@ -162,25 +163,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('search-button');
     const toggleAdvancedButton = document.getElementById('toggle-advanced-search');
     const advancedOptions = document.getElementById('advanced-search-options');
+    const excludeButton = document.getElementById('toggle-exclude-mode');
+
+    let excludeMode = false;
+    excludeButton?.addEventListener('click', () => {
+        excludeMode = !excludeMode;
+        excludeButton.textContent = `Exclude: ${excludeMode ? "On" : "Off"}`;
+    });
 
 
-     searchButton?.addEventListener('click', async () => {
+    searchButton?.addEventListener('click', async () => {
         const cardName = searchInput.value.trim();
         if (!cardName) return;
 
         // Get selected types
         const selectedTypes = Array.from(
+            document.querySelectorAll('#advanced-search-options input[type="checkbox"][value]:checked')
+        )
+        .filter(cb => !["B","R","W","U","G"].includes(cb.value))
+        .map(cb => cb.value);
+
+        // Get selected colors
+        const selectedColors = Array.from(
             document.querySelectorAll('#advanced-search-options input[type="checkbox"]:checked')
-        ).map(cb => cb.value);
+        )
+        .filter(cb => ["B","R","W","U","G"].includes(cb.value))
+        .map(cb => cb.value);
 
         const cards = await fetchCards(cardName);
 
-        // Filter by types
         let filteredCards = cards;
+
+        // Filter by type
         if (selectedTypes.length > 0) {
-            filteredCards = cards.filter(card => {
+            filteredCards = filteredCards.filter(card => {
                 const typeLine = (card.type_line || "").toLowerCase();
                 return selectedTypes.some(type => typeLine.includes(type));
+            });
+        }
+
+        // Filter by colors
+        if (selectedColors.length > 0) {
+            filteredCards = filteredCards.filter(card => {
+                const cardColors = card.colors || [];
+
+                if (excludeMode) {
+                    // Exclude mode: card colors must be exactly the selected colors
+                    return (
+                        cardColors.length === selectedColors.length &&
+                        selectedColors.every(c => cardColors.includes(c))
+                    );
+                } else {
+                    // Normal mode: card has at least one selected color
+                    return selectedColors.some(c => cardColors.includes(c));
+                }
             });
         }
 
@@ -199,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             advancedOptions.style.display = "none";
         }
     });
+
 
     // Collection
     const collectionList = document.getElementById('collection-list');
