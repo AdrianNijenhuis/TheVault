@@ -1,18 +1,17 @@
 // Start with showing images
 let showImages = true;
 
-// Helper to load collection
+/////////////// Helpers ///////////////////
+
 function getCollection() {
     const stored = localStorage.getItem('mtg-collection');
     return stored ? JSON.parse(stored) : [];
 }
 
-// Helper to save collection
 function saveCollection(collection) {
     localStorage.setItem('mtg-collection', JSON.stringify(collection));
 }
 
-// Add a copy
 function addCardToCollection(card) {
     const collection = getCollection();
     collection.push(card);
@@ -20,7 +19,6 @@ function addCardToCollection(card) {
     document.dispatchEvent(new CustomEvent("collection-updated"));
 }
 
-// Remove a copy
 function removeCardFromCollection(card) {
     const collection = getCollection();
     const index = collection.findIndex(c => c.id === card.id);
@@ -31,44 +29,72 @@ function removeCardFromCollection(card) {
     }
 }
 
-// This function can be called by Lookup page buttons
-function handleLookupIncrement(card) {
-    addCardToCollection(card);
-    updateCount(card.id);
-    const container = document.getElementById('collection-list');
-    renderCollection(container);
-}
+/////////////// Lookup ///////////////////
 
-function handleLookupDecrement(card) {
-    removeCardFromCollection(card);
-    updateCount(card.id);
-    const container = document.getElementById('collection-list');
-    renderCollection(container);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const collectionList = document.getElementById('collection-list');
-    const toggleButton = document.getElementById('toggle-display');
-    renderCollection(collectionList);
-
-    toggleButton.addEventListener('click', () => {
-        showImages = !showImages;
-        renderCollection(collectionList);
-    });
-
-    // ✅ Listen for the event so collection updates
-    document.addEventListener("collection-updated", () => {
-        const collectionList = document.getElementById('collection-list');
-        if (collectionList) {
-            renderCollection(collectionList);
+async function fetchCards(name) {
+    try {
+        const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(name)}`);
+        const data = await response.json();
+        if (!data.data || !Array.isArray(data.data)) {
+            return [];
         }
-    });
-});
+        return data.data.map((item) => ({
+            id: item.id,
+            name: item.name,
+            imageUrl: (item.image_uris?.normal) || ''
+        }));
+    } catch (error) {
+        console.error('Error fetching cards:', error);
+        return [];
+    }
+}
 
+function updateCountDisplay(card) {
+    const collection = getCollection();
+    const count = collection.filter(c => c.id === card.id).length;
+    const countSpan = document.getElementById(`collection-count-${card.id}`);
+    if (countSpan) {
+        countSpan.textContent = count.toString();
+    }
+}
 
+function displayCards(cards) {
+    const searchResult = document.getElementById('search-result');
+    searchResult.innerHTML = "";
 
+    for (const card of cards) {
+        const collection = getCollection();
+        const count = collection.filter(c => c.id === card.id).length;
 
-///////////////Render Collection///////////////////////////////////
+        const cardDiv = document.createElement('div');
+        cardDiv.innerHTML = `
+            <h2>${card.name}</h2>
+            <img src="${card.imageUrl}" alt="${card.name}" style="width:200px;">
+            <p>Collection Count: <span id="collection-count-${card.id}">${count}</span></p>
+            <br>
+            <button id="decrease-${card.id}">-</button>
+            <button id="increase-${card.id}">+</button>
+            <hr>
+        `;
+        searchResult.appendChild(cardDiv);
+
+        const increaseButton = document.getElementById(`increase-${card.id}`);
+        const decreaseButton = document.getElementById(`decrease-${card.id}`);
+
+        increaseButton.addEventListener('click', () => {
+            addCardToCollection(card);
+            updateCountDisplay(card);
+        });
+
+        decreaseButton.addEventListener('click', () => {
+            removeCardFromCollection(card);
+            updateCountDisplay(card);
+        });
+    }
+}
+
+/////////////// Collection Rendering ///////////////////
+
 function renderCollection(container) {
     const collection = getCollection();
     container.innerHTML = `<div class="card-grid"></div>`;
@@ -103,6 +129,7 @@ function renderCollection(container) {
         grid.appendChild(cardDiv);
     });
 
+    // Use event delegation to handle +/- clicks
     grid.addEventListener('click', (event) => {
         const button = event.target.closest('button');
         if (!button) return;
@@ -120,12 +147,39 @@ function renderCollection(container) {
         } else if (action === 'decrease') {
             removeCardFromCollection(firstMatch);
         }
-
-        renderCollection(container);
     });
 }
 
+/////////////// Init ///////////////////
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Lookup search
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    searchButton?.addEventListener('click', async () => {
+        const cardName = searchInput.value.trim();
+        if (!cardName) return;
+        const cards = await fetchCards(cardName);
+        if (cards.length > 0) {
+            displayCards(cards);
+        } else {
+            document.getElementById('search-result').innerHTML = `<p>No cards found!</p>`;
+        }
+    });
 
+    // Collection
+    const collectionList = document.getElementById('collection-list');
+    const toggleButton = document.getElementById('toggle-display');
+    renderCollection(collectionList);
+
+    toggleButton?.addEventListener('click', () => {
+        showImages = !showImages;
+        renderCollection(collectionList);
+    });
+
+    document.addEventListener("collection-updated", () => {
+        renderCollection(collectionList);
+    });
+});
 
 export {};
