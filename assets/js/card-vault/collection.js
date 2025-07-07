@@ -24,24 +24,24 @@ function removeCardFromCollection(card) {
     const collection = getCollection();
     const index = collection.findIndex(c => c.id === card.id);
     if (index !== -1) {
-        collection.splice(index, 1); // remove one copy
+        collection.splice(index, 1); // removes one copy
         saveCollection(collection);
     }
 }
 
-// Update the number shown on screen for a specific card
-function updateCount(cardId) {
-    const collection = getCollection();
-    const count = collection.filter(c => c.id === cardId).length;
-    const countSpan = document.getElementById(`count-${cardId}`);
-    if (countSpan) {
-        countSpan.textContent = count.toString();
-    }
-    // Optional: If count is 0, re-render the collection (hide card completely)
-    if (count === 0) {
-        const container = document.getElementById('collection-list');
-        renderCollection(container);
-    }
+// This function can be called by Lookup page buttons
+function handleLookupIncrement(card) {
+    addCardToCollection(card);
+    updateCount(card.id);
+    const container = document.getElementById('collection-list');
+    renderCollection(container);
+}
+
+function handleLookupDecrement(card) {
+    removeCardFromCollection(card);
+    updateCount(card.id);
+    const container = document.getElementById('collection-list');
+    renderCollection(container);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('toggle-display');
     renderCollection(collectionList);
     toggleButton.addEventListener('click', () => {
-        showImages = !showImages; // Flip the mode
-        renderCollection(collectionList); // Re-render
+        showImages = !showImages;
+        renderCollection(collectionList);
     });
 });
 
@@ -92,18 +92,12 @@ function renderCollection(container) {
         grid.appendChild(cardDiv);
     });
 
-    // Always clear previous event listeners before attaching a new one
-    const newGrid = grid.cloneNode(true);
-    grid.parentNode.replaceChild(newGrid, grid);
-
-    // Attach a single click handler to the grid
-    newGrid.addEventListener('click', (event) => {
+    grid.addEventListener('click', (event) => {
         const button = event.target.closest('button');
         if (!button) return;
 
         const action = button.dataset.action;
         const cardId = button.dataset.cardId;
-
         if (!action || !cardId) return;
 
         const collection = getCollection();
@@ -116,7 +110,6 @@ function renderCollection(container) {
             removeCardFromCollection(firstMatch);
         }
 
-        // Always re-render the collection to refresh counts/buttons
         renderCollection(container);
     });
 }
