@@ -49,6 +49,7 @@ async function fetchCards(name) {
     }
 }
 
+/*      ******Potentially redundant*******
 function updateCountDisplay(card) {
     const collection = getCollection();
     const count = collection.filter(c => c.id === card.id).length;
@@ -57,6 +58,7 @@ function updateCountDisplay(card) {
         countSpan.textContent = count.toString();
     }
 }
+*/
 
 function displayCards(cards) {
     const searchResult = document.getElementById('search-result');
