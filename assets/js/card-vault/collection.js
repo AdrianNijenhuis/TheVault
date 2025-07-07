@@ -1,5 +1,5 @@
 let showImages = true; // Start with showing images
-// Helper to load your collection
+// Helper to load collection
 function getCollection() {
     const stored = localStorage.getItem('mtg-collection');
     return stored ? JSON.parse(stored) : [];
@@ -89,12 +89,14 @@ function renderCollection(container) {
 
         increaseButton.addEventListener('click', () => {
             addCardToCollection(card);
-            updateCount(card.id);
+            const container = document.getElementById('collection-list');
+            renderCollection(container);
         });
 
         decreaseButton.addEventListener('click', () => {
             removeCardFromCollection(card);
-            updateCount(card.id);
+            const container = document.getElementById('collection-list');
+            renderCollection(container);
         });
     });
 }
