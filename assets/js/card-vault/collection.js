@@ -172,11 +172,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Collection
     const collectionList = document.getElementById('collection-list');
     const toggleButton = document.getElementById('toggle-display');
+    const deleteButton = document.getElementById("delete-collection");
     renderCollection(collectionList);
 
     toggleButton?.addEventListener('click', () => {
         showImages = !showImages;
         renderCollection(collectionList);
+    });
+
+    deleteButton?.addEventListener("click", () => {
+        if (confirm("Are you sure you want to delete your entire collection? This cannot be undone.")) {
+            localStorage.removeItem("mtg-collection");
+            renderCollection(collectionList);
+        }
     });
 
     document.addEventListener("collection-updated", () => {
