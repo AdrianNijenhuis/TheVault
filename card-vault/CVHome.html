@@ -17,6 +17,22 @@
     <h1>Lookup</h1>
     <input type="text" id="search-input" placeholder="Enter card name...">
     <button id="search-button">Search</button>
+
+    <button id="toggle-advanced-search">Advanced Search</button>
+
+    <div id="advanced-search-options" style="display:none; margin-top:10px;">
+      <p><strong>Filter by Card Type:</strong></p>
+      <label><input type="checkbox" value="enchantment"> Enchantment</label><br>
+      <label><input type="checkbox" value="artifact"> Artifact</label><br>
+      <label><input type="checkbox" value="land"> Land</label><br>
+      <label><input type="checkbox" value="sorcery"> Sorcery</label><br>
+      <label><input type="checkbox" value="instant"> Instant</label><br>
+      <label><input type="checkbox" value="planeswalker"> Planeswalker</label><br>
+      <label><input type="checkbox" value="creature"> Creature</label><br>
+      <label><input type="checkbox" value="battle"> Battle</label><br>
+      <label><input type="checkbox" value="tribal"> Tribal</label><br>
+    </div>
+
     <div id="search-result"></div>
 
 

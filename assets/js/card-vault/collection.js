@@ -41,7 +41,8 @@ async function fetchCards(name) {
         return data.data.map((item) => ({
             id: item.id,
             name: item.name,
-            imageUrl: (item.image_uris?.normal) || ''
+            imageUrl: (item.image_uris?.normal) || '',
+            type_line: item.type_line || ''
         }));
     } catch (error) {
         console.error('Error fetching cards:', error);
@@ -155,17 +156,47 @@ function renderCollection(container) {
 /////////////// Init ///////////////////
 
 document.addEventListener('DOMContentLoaded', () => {
+
     // Lookup search
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-    searchButton?.addEventListener('click', async () => {
+    const toggleAdvancedButton = document.getElementById('toggle-advanced-search');
+    const advancedOptions = document.getElementById('advanced-search-options');
+
+
+     searchButton?.addEventListener('click', async () => {
         const cardName = searchInput.value.trim();
         if (!cardName) return;
+
+        // Get selected types
+        const selectedTypes = Array.from(
+            document.querySelectorAll('#advanced-search-options input[type="checkbox"]:checked')
+        ).map(cb => cb.value);
+
         const cards = await fetchCards(cardName);
-        if (cards.length > 0) {
-            displayCards(cards);
+
+        // Filter by types
+        let filteredCards = cards;
+        if (selectedTypes.length > 0) {
+            filteredCards = cards.filter(card => {
+                const typeLine = (card.type_line || "").toLowerCase();
+                return selectedTypes.some(type => typeLine.includes(type));
+            });
+        }
+
+        if (filteredCards.length > 0) {
+            displayCards(filteredCards);
         } else {
             document.getElementById('search-result').innerHTML = `<p>No cards found!</p>`;
+        }
+    });
+
+    // Toggle Advanced Search visibility
+    toggleAdvancedButton?.addEventListener('click', () => {
+        if (advancedOptions.style.display === "none") {
+            advancedOptions.style.display = "block";
+        } else {
+            advancedOptions.style.display = "none";
         }
     });
 
