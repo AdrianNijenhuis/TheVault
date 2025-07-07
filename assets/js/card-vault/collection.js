@@ -17,6 +17,7 @@ function addCardToCollection(card) {
     const collection = getCollection();
     collection.push(card);
     saveCollection(collection);
+    document.dispatchEvent(new CustomEvent("collection-updated"));
 }
 
 // Remove a copy
@@ -24,8 +25,9 @@ function removeCardFromCollection(card) {
     const collection = getCollection();
     const index = collection.findIndex(c => c.id === card.id);
     if (index !== -1) {
-        collection.splice(index, 1); // removes one copy
+        collection.splice(index, 1);
         saveCollection(collection);
+        document.dispatchEvent(new CustomEvent("collection-updated"));
     }
 }
 
@@ -48,9 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const collectionList = document.getElementById('collection-list');
     const toggleButton = document.getElementById('toggle-display');
     renderCollection(collectionList);
+
     toggleButton.addEventListener('click', () => {
         showImages = !showImages;
         renderCollection(collectionList);
+    });
+
+    // ✅ Listen for the event so collection updates
+    document.addEventListener("collection-updated", () => {
+        const collectionList = document.getElementById('collection-list');
+        if (collectionList) {
+            renderCollection(collectionList);
+        }
     });
 });
 
