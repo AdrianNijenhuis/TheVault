@@ -14,6 +14,8 @@ const searchButton = document.getElementById('search-button');
 const searchResult = document.getElementById('search-result');
 // Attach a click listener
 searchButton === null || searchButton === void 0 ? void 0 : searchButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+    if (!searchInput)
+        return;
     const cardName = searchInput.value.trim();
     if (!cardName)
         return;
@@ -22,10 +24,12 @@ searchButton === null || searchButton === void 0 ? void 0 : searchButton.addEven
         displayCards(cards);
     }
     else {
-        searchResult.innerHTML = `<p>No cards found!</p>`;
+        if (searchResult) {
+            searchResult.innerHTML = `<p>No cards found!</p>`;
+        }
     }
 }));
-// Fetch card from Scryfall
+// Fetch card data from Scryfall
 function fetchCards(name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -52,7 +56,9 @@ function fetchCards(name) {
 }
 // Display the card info
 function displayCards(cards) {
-    searchResult.innerHTML = ""; // Clear old results
+    if (!searchResult)
+        return;
+    searchResult.innerHTML = ''; // Clear old results
     for (const card of cards) {
         const collection = getCollection();
         const count = collection.filter(c => c.id === card.id).length;
@@ -69,11 +75,11 @@ function displayCards(cards) {
         searchResult.appendChild(cardDiv);
         const increaseButton = document.getElementById(`increase-${card.id}`);
         const decreaseButton = document.getElementById(`decrease-${card.id}`);
-        increaseButton.addEventListener('click', () => {
+        increaseButton === null || increaseButton === void 0 ? void 0 : increaseButton.addEventListener('click', () => {
             addCardToCollection(card);
             updateCountDisplay(card);
         });
-        decreaseButton.addEventListener('click', () => {
+        decreaseButton === null || decreaseButton === void 0 ? void 0 : decreaseButton.addEventListener('click', () => {
             removeCardFromCollection(card);
             updateCountDisplay(card);
         });
